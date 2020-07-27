@@ -1,0 +1,23 @@
+server:
+  port: 9003
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss # 指定日期格式化
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql:///mapper?characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC #//127.0.0.1:3306/mapper
+mybatis:
+  type-aliases-package: com.ty.mapper.entity  # 指定实体类路径
+  configuration:
+    map-underscore-to-camel-case: true  # 指定驼峰命名
+    call-setters-on-nulls: true  # map返回查询结果为null 的值, 如果不设置则不返回
+  mapper-locations: mappers/*.xml # 指定xml路径
+
+
+
+logging:
+  level:
+    com.ty: debug

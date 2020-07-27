@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ty.mapper.mapper.ProductMapper">
+    <!-- <resultMap id="product" type="com.ty.mapper.entity.Product">
+         &lt;!&ndash; 主键 property指定实体类属性 |  column指定数据库表中的属性 | javaType实体类中属性的类型 &ndash;&gt;
+         <id property="id" column="id" javaType="Integer"/>
+
+         &lt;!&ndash; 普通属性 property指定实体类属性 |  column指定数据库表中的属性 | javaType实体类中属性的类型 &ndash;&gt;
+        &lt;!&ndash; <result property="categoryId" column="category_id" javaType="integer"/>
+         <result property="categoryName" column="category_name" javaType="String"/>
+         <result property="createTime" column="create_time" javaType="date"/>
+         <result property="updateTime" column="update_time" javaType="date"/>&ndash;&gt;
+     </resultMap>-->
+
+    <select id="findProductAndCategoryName" resultType="com.ty.mapper.entity.Product">
+        select p.*, c.category_name
+        from product p,
+             category c
+        where p.category_id = c.id
+          and p.id = #{id}
+    </select>
+
+    <select id="findProductByParams" resultType="com.ty.mapper.entity.Product">
+        select *
+        from product
+        <!--这个类似 switch语句-->
+        <where>
+            <choose>
+                <when test="id != null">
+                    id = #{id}
+                </when>
+                <when test="categoryId != null">
+                    category_id=#{categoryId}
+                </when>
+                <otherwise>
+                    product_name=#{productName}
+                </otherwise>
+            </choose>
+        </where>
+        <!--这个就是if else -->
+        <!-- <where>
+             <if test="id != null">
+                 id= #{id}
+             </if>
+             <if test="categoryId != null">
+                AND category_id=#{categoryId}
+             </if>
+             <if test="productName != null">
+                 AND product_name=#{productName}
+             </if>
+         </where>-->
+    </select>
+
+    <update id="update">
+        update product
+
+        <!--
+             set 是设置标签
+            <set>
+            </set>
+             去掉第一个 and 或者 or  在前面加上where
+            <trim prefix="WHERE" prefixoverride="AND |OR">
+        -->
+        <!--prefix在前面加上set  suffixOverrides 去掉最后一个,  suffix在结尾加上这么一句-->
+             
+
+        <trim prefix="set" suffixOverrides="," suffix="where id = #{id}">
+            <if test="categoryId != null">
+                category_id=#{categoryId},
+            </if>
+            <if test="productName != null">
+                product_name=#{productName},
+            </if>
+        </trim>
+    </update>
+
+    <!-- 如果是map使用foreach index 是键，item 是值 -->
+    <insert id="insertProductList">
+        <!--item 对象, index 是索引 open 开头添加  close 结束添加 separator每一次遍历中间加上-->
+        insert into product (category_id, product_name) values
+        <foreach collection="list" item="pro" index="index" open="" separator="," close="">
+            (#{pro.categoryId}, #{pro.productName})
+        </foreach>
+    </insert>
+</mapper>
