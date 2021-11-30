@@ -7,6 +7,9 @@ import com.ty.mapper.entity.Category;
 import com.ty.mapper.entity.Product;
 import com.ty.mapper.mapper.CategoryMapper;
 import com.ty.mapper.mapper.ProductMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -14,18 +17,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import tk.mybatis.mapper.entity.Example;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class MapperApplicationTests {
+public class MapperApplicationTests {
 
     @Autowired
     CategoryMapper categoryMapper;
@@ -46,10 +56,10 @@ class MapperApplicationTests {
 
         // 添加一个
         // insertSelective INSERT INTO category ( id,category_name ) VALUES( ?,? ) 只会插入有值的这样可以使用默认值
-		c.setCategoryName("男装");
-		c.setId(null);
-		categoryMapper.insertSelective(c);
-		System.out.println(categoryMapper.select(c));
+        c.setCategoryName("男装");
+        c.setId(null);
+        categoryMapper.insertSelective(c);
+        System.out.println(categoryMapper.select(c));
 
         // 根据主键
         //SELECT id,category_name,create_time,update_time FROM category WHERE id = ?
@@ -92,7 +102,7 @@ class MapperApplicationTests {
      * 批量操作
      */
     @Test
-    void test3(){
+    void test3() {
         // 需要指定为 1,2,3  这样的格式
 //        productMapper.deleteByIds("1,2,3");
 
@@ -110,10 +120,9 @@ class MapperApplicationTests {
 
     /**
      * 自定义sql
-     *
      */
     @Test
-    void test4(){
+    void test4() {
         Product p = new Product();
         p.setId(4);
         p.setCategoryId(2);
@@ -128,7 +137,7 @@ class MapperApplicationTests {
      * 添加一个
      */
     @Test
-    void test5(){
+    void test5() {
         Product p = new Product();
         p.setId(4);
         p.setCategoryId(2);
@@ -142,7 +151,7 @@ class MapperApplicationTests {
      * 添加集合
      */
     @Test
-    void test6(){
+    void test6() {
         Product p = new Product();
 
         p.setCategoryId(2);
@@ -178,11 +187,18 @@ class MapperApplicationTests {
     }
 
     @Test
-    void test7(){
+    void test7() {
         Object o = "hello";
         String s = (String) o;
         System.out.println(s);
     }
+    @Test
+    public void test8() throws Exception {
+
+
+
+    }
+
 
 
 }

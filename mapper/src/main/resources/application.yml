@@ -20,4 +20,4 @@ mybatis:
 
 logging:
   level:
-    com.ty: debug
+    com.ty: off
